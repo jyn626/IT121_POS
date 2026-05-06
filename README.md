@@ -1,10 +1,6 @@
-# IT121 - Comprog PIT
-
-# 📌 Unsaon pag contribute? 🐻
+# 📌 Unsaon pag contribute?
 
 Follow these steps to contribute safely and correctly.
-
----
 
 ## 1️⃣ Fork the Repository
 
@@ -17,7 +13,7 @@ This creates your own copy of the project.
 ## 2️⃣ Clone Your Fork
 
 ```bash
-git clone https://github.com/YOUR-USERNAME/REPOSITORY-NAME.git
+git clone https://github.com/jyn626/IT121_POS.git
 cd REPOSITORY-NAME
 ```
 
