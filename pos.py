@@ -5,6 +5,8 @@ from tkinter import PhotoImage
 # i push dayon ninyo sa atong github
 # i follow ra ninyo ni!!
 
+# new codeee
+
 root = tk.Tk()
 
 root.geometry("1350x750")
