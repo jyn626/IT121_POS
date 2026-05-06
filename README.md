@@ -2,7 +2,7 @@
 
 Follow these steps to contribute safely and correctly.
 
-## 1️⃣ Fork the Repository
+## 1. Fork the Repository
 
 Click the **Fork** button at the top right of this repository.
 
@@ -10,7 +10,7 @@ This creates your own copy of the project.
 
 ---
 
-## 2️⃣ Clone Your Fork
+## 2. Clone Your Fork
 
 ```bash
 git clone https://github.com/jyn626/IT121_POS.git
@@ -19,7 +19,7 @@ cd REPOSITORY-NAME
 
 ---
 
-## 3️⃣ Create a New Branch
+## 3. Create a New Branch
 
 Never work directly on `main`.
 
@@ -37,7 +37,7 @@ docs/update-readme
 
 ---
 
-## 4️⃣ Make Your Changes
+## 4. Make Your Changes
 
 You can:
 
@@ -51,17 +51,7 @@ Please follow the project’s coding style.
 
 ---
 
-## 5️⃣ Test Your Changes
-
-Before submitting:
-
-✅ Make sure the project runs
-✅ No errors appear
-✅ Existing features still work
-
----
-
-## 6️⃣ Commit Your Changes
+## 5. Commit Your Changes
 
 Use clear commit messages.
 
@@ -78,7 +68,7 @@ Good commit message examples:
 
 ---
 
-## 7️⃣ Push Your Branch
+## 6. Push Your Branch
 
 ```bash
 git push origin feature/your-feature-name
@@ -86,7 +76,7 @@ git push origin feature/your-feature-name
 
 ---
 
-## 8️⃣ Create a Pull Request (PR)
+## 7. Create a Pull Request (PR)
 
 1. Go to your fork on GitHub
 2. Click **Compare & Pull Request**
