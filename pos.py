@@ -1,6 +1,12 @@
 import tkinter as tk
 from tkinter import ttk, PhotoImage
 
+# so after ninyo mag add og code guyss
+# i push dayon ninyo sa atong github
+# i follow ra ninyo ni!!
+
+# new codeee
+
 root = tk.Tk()
 
 root.geometry("1350x750")
