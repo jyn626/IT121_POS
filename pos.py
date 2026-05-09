@@ -41,6 +41,7 @@ btn7 = tk.Button(numbers_frame, text='7', bd=0, fg='black', font=("Tahoma", 16),
 btn8 = tk.Button(numbers_frame, text='8', bd=0, fg='black', font=("Tahoma", 16), bg='seashell3', command=lambda: press(8))
 btn9 = tk.Button(numbers_frame, text='9', bd=0, fg='black', font=("Tahoma", 16), bg='seashell3', command=lambda: press(9))
 btn0 = tk.Button(numbers_frame, text='0', bd=0, fg='black', font=("Tahoma", 16), bg='seashell3', command=lambda: press(0))
+btnperiod = tk.Button(numbers_frame, text='.', bd=0, fg='black', font=("Tahoma", 16), bg='seashell3', command=lambda: press('.'))
 btnclear = tk.Button(numbers_frame, text='C', bd=0, fg='black', font=("Tahoma", 16), bg='seashell3', command=lambda:clear_cost())
 
 btn1.grid(row=0, column=0, sticky="nsew")
@@ -53,7 +54,8 @@ btn7.grid(row=2, column=0, sticky="nsew")
 btn8.grid(row=2, column=1, sticky="nsew")
 btn9.grid(row=2, column=2, sticky="nsew")
 btn0.grid(row=3, column=0, sticky="nsew")
-btnclear.grid(row=3, column=1, columnspan=2, sticky="nsew")
+btnperiod.grid(row=3, column=1, columnspan=2, sticky="nsew")
+btnclear.grid(row=4, column=0, columnspan=3, sticky="nsew")
 
 # .grid_rowconfigure 
 # -- para mo expand ang mga buttons sa width saiyang parent
