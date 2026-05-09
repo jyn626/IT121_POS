@@ -18,9 +18,20 @@ numbers_frame.grid(row=0, column=0, padx=5, pady=2, sticky="nsew")
   
 def press(n):
     entry_cost.config(state="normal")
+    
     current_value = entry_cost.get()
+    
+    # if ang n kay '.' 
+    # and ang entry nato is empty
+    # then dili nato e add ang period
+    
+    if n == '.' and len(current_value) == 0:
+        entry_cost.config(state="disabled")
+        return
+    
     entry_cost.delete(0, tk.END)
     entry_cost.insert(0, str(current_value) + str(n))
+        
     entry_cost.config(state="disabled")
 
 
