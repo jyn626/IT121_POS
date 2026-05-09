@@ -9,10 +9,28 @@ root.resizable(False, False)
 
 BG_COLOR = "slategray1"
 
-# products image
-product_image_1 = Image.open("hyein.jpg")
-product_image_1 = product_image_1.resize((100, 100))
-product_image_1_photo = ImageTk.PhotoImage(product_image_1)
+PRODUCTS_IMAGES = [
+    'hyein.jpg',
+    'hyein.jpg',
+    'hyein.jpg',
+    'hyein.jpg',
+    'hyein.jpg',
+    'hyein.jpg',
+    'hyein.jpg',
+    'hyein.jpg',
+    'hyein.jpg',
+    'hyein.jpg',
+    'hyein.jpg',
+    'hyein.jpg',
+    'hyein.jpg',
+    'hyein.jpg',
+    'hyein.jpg',
+    'hyein.jpg',
+    'hyein.jpg',
+    'hyein.jpg',
+    'hyein.jpg',
+    'hyein.jpg',
+]
 
 top_frame = tk.Frame(root, width=1350, height=550, bg=BG_COLOR)
 top_frame.grid(row=0, column=0)
@@ -117,9 +135,23 @@ products_frame = tk.Frame(top_frame, bg="gainsboro", width=575, height=490,
                           borderwidth=4, relief="ridge")
 products_frame.grid(row=0, column=2, padx=5, pady=5, sticky="nsew")
 
-product_image_1_label = tk.Label(products_frame, image=product_image_1_photo)
-product_image_1_label.image = product_image_1_photo
-product_image_1_label.grid(row=0, column=0)
+products_frame_row = 0
+products_frame_col = 0
+for image in PRODUCTS_IMAGES:
+    # products image
+    product_image_1 = Image.open(image)
+    product_image_1 = product_image_1.resize((110, 110))
+    product_image_1_photo = ImageTk.PhotoImage(product_image_1)
+
+    product_image_1_label = tk.Label(products_frame, image=product_image_1_photo)
+    product_image_1_label.image = product_image_1_photo
+    product_image_1_label.grid(row=products_frame_row, column=products_frame_col)
+
+    products_frame_col += 1
+    
+    if (products_frame_col == 5):
+        products_frame_row += 1
+        products_frame_col = 0
 
 # kani para sundon sa frame ang gihatag nato nga width and height nya,
 # kay by default automatic iyang width and height
