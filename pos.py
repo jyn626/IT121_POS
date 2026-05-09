@@ -1,5 +1,6 @@
 import tkinter as tk
-from tkinter import ttk, PhotoImage
+from tkinter import ttk
+from PIL import Image, ImageTk
 
 root = tk.Tk()
 
@@ -7,6 +8,11 @@ root.geometry("1350x750")
 root.resizable(False, False)
 
 BG_COLOR = "slategray1"
+
+# products image
+product_image_1 = Image.open("hyein.jpg")
+product_image_1 = product_image_1.resize((100, 100))
+product_image_1_photo = ImageTk.PhotoImage(product_image_1)
 
 top_frame = tk.Frame(root, width=1350, height=550, bg=BG_COLOR)
 top_frame.grid(row=0, column=0)
@@ -106,16 +112,21 @@ barcode = tk.Canvas(middle_frame, height=70, highlightthickness=0, bg="gainsboro
 barcode.grid(row=3, columnspan=2, padx=5, pady=5, sticky="ew")
 
 # right frame
+
 products_frame = tk.Frame(top_frame, bg="gainsboro", width=575, height=490,
                           borderwidth=4, relief="ridge")
 products_frame.grid(row=0, column=2, padx=5, pady=5, sticky="nsew")
-products_frame.grid_propagate(False)
+
+product_image_1_label = tk.Label(products_frame, image=product_image_1_photo)
+product_image_1_label.image = product_image_1_photo
+product_image_1_label.grid(row=0, column=0)
 
 # kani para sundon sa frame ang gihatag nato nga width and height nya,
 # kay by default automatic iyang width and height
 top_frame.grid_propagate(False)
 numbers_frame.grid_propagate(False)
 middle_frame.grid_propagate(False)
+products_frame.grid_propagate(False)
 
 # bottom frame
 bottom_frame = tk.Frame(root, width=1350, height=200, borderwidth=4, bg=BG_COLOR)
