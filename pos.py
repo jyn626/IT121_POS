@@ -6,12 +6,14 @@ root = tk.Tk()
 root.geometry("1350x750")
 root.resizable(False, False)
 
-top_frame = tk.Frame(root, width=1350, height=500, bg="lightblue")
+BG_COLOR = "slategray1"
+
+top_frame = tk.Frame(root, width=1350, height=550, bg=BG_COLOR)
 top_frame.grid(row=0, column=0)
   
 # number frame
 numbers_frame = tk.Frame(top_frame, bg="gainsboro", width=350, height=490, borderwidth=4, relief="ridge")
-numbers_frame.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
+numbers_frame.grid(row=0, column=0, padx=5, pady=2, sticky="nsew")
 
   
 def press(n):
@@ -103,7 +105,7 @@ numbers_frame.grid_propagate(False)
 middle_frame.grid_propagate(False)
 
 # bottom frame
-bottom_frame = tk.Frame(root, width=1350, height=200, borderwidth=4, bg="lightblue")
+bottom_frame = tk.Frame(root, width=1350, height=200, borderwidth=4, bg=BG_COLOR)
 bottom_frame.grid(row=1 , column=0, sticky="nsew")
 
 # 3 bottom sections
