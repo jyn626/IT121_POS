@@ -15,13 +15,17 @@ numbers_frame.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
 
   
 def press(n):
+    entry_cost.config(state="normal")
     current_value = entry_cost.get()
     entry_cost.delete(0, tk.END)
     entry_cost.insert(0, str(current_value) + str(n))
+    entry_cost.config(state="disabled")
 
 
 def clear_cost():
+    entry_cost.config(state="normal")
     entry_cost.delete(0, tk.END)
+    entry_cost.config(state="disabled")
     
   
 # number buttons
@@ -135,7 +139,7 @@ entry_modepayment = tk.Entry(bottommiddle_frame, width=20, font=("Tahoma", 12))
 entry_modepayment.grid(row=0, column=1, padx=12, pady=12)
 
 tk.Label(bottommiddle_frame, text="Cost", font=("Tahoma", 14), bg="gainsboro").grid(row=1, column=0, padx=12, pady=12)
-entry_cost = tk.Entry(bottommiddle_frame, width=20, font=("Tahoma", 12))
+entry_cost = tk.Entry(bottommiddle_frame, width=20, font=("Tahoma", 12), state="disabled")
 entry_cost.grid(row=1, column=1, padx=12, pady=12)
 
 tk.Label(bottommiddle_frame, text="Change", font=("Tahoma", 14), bg="gainsboro").grid(row=2, column=0, padx=12, pady=12)
