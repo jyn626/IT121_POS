@@ -15,8 +15,14 @@ numbers_frame.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
 
   
 def press(n):
-    pass
+    current_value = entry_cost.get()
+    entry_cost.delete(0, tk.END)
+    entry_cost.insert(0, str(current_value) + str(n))
 
+
+def clear_cost():
+    entry_cost.delete(0, tk.END)
+    
   
 # number buttons
 btn1 = tk.Button(numbers_frame, text='1', bd=0, fg='black', font=("Tahoma", 16), bg='seashell3', command=lambda: press(1))
@@ -29,6 +35,7 @@ btn7 = tk.Button(numbers_frame, text='7', bd=0, fg='black', font=("Tahoma", 16),
 btn8 = tk.Button(numbers_frame, text='8', bd=0, fg='black', font=("Tahoma", 16), bg='seashell3', command=lambda: press(8))
 btn9 = tk.Button(numbers_frame, text='9', bd=0, fg='black', font=("Tahoma", 16), bg='seashell3', command=lambda: press(9))
 btn0 = tk.Button(numbers_frame, text='0', bd=0, fg='black', font=("Tahoma", 16), bg='seashell3', command=lambda: press(0))
+btnclear = tk.Button(numbers_frame, text='C', bd=0, fg='black', font=("Tahoma", 16), bg='seashell3', command=lambda:clear_cost())
 
 btn1.grid(row=0, column=0, sticky="nsew")
 btn2.grid(row=0, column=1, sticky="nsew")
@@ -40,6 +47,7 @@ btn7.grid(row=2, column=0, sticky="nsew")
 btn8.grid(row=2, column=1, sticky="nsew")
 btn9.grid(row=2, column=2, sticky="nsew")
 btn0.grid(row=3, column=0, sticky="nsew")
+btnclear.grid(row=3, column=1, columnspan=2, sticky="nsew")
 
 # .grid_rowconfigure 
 # -- para mo expand ang mga buttons sa width saiyang parent
@@ -66,7 +74,7 @@ tree.heading("Quantity", text="Quantity")
 tree.heading("Amount", text="Amount")
 tree.column("Item", width=180, anchor="w")
 tree.column("Quantity", width=60, anchor="center")
-tree.column("Amount", width=100, anchor="center")
+tree.column("Amount", width=120, anchor="center")
 
 scrollbar = ttk.Scrollbar(middle_frame, orient="vertical", command=tree.yview)
 tree.configure(yscrollcommand=scrollbar.set)
@@ -109,30 +117,30 @@ bottommiddle_frame.grid_propagate(False)
 bottomright_frame.grid_propagate(False)
 
 # bottomleft_frame entries
-tk.Label(bottomleft_frame, text="Subtotal", font=("Tahoma", 11), bg="gainsboro").grid(row=0, column=0, padx=10, pady=10)
-entry_subtotal = tk.Entry(bottomleft_frame, width=20, font=("Tahoma", 10))
-entry_subtotal.grid(row=0, column=1, padx=10, pady=10)
+tk.Label(bottomleft_frame, text="Subtotal", font=("Tahoma", 14), bg="gainsboro").grid(row=0, column=0, padx=12, pady=12)
+entry_subtotal = tk.Entry(bottomleft_frame, width=20, font=("Tahoma", 12))
+entry_subtotal.grid(row=0, column=1, padx=12, pady=12)
 
-tk.Label(bottomleft_frame, text="Tax", font=("Tahoma", 11), bg="gainsboro").grid(row=1, column=0, padx=10, pady=10)
-entry_tax = tk.Entry(bottomleft_frame, width=20, font=("Tahoma", 10))
-entry_tax.grid(row=1, column=1, padx=10, pady=10)
+tk.Label(bottomleft_frame, text="Tax", font=("Tahoma", 14), bg="gainsboro").grid(row=1, column=0, padx=12, pady=12)
+entry_tax = tk.Entry(bottomleft_frame, width=20, font=("Tahoma", 12))
+entry_tax.grid(row=1, column=1, padx=12, pady=12)
 
-tk.Label(bottomleft_frame, text="Total", font=("Tahoma", 11), bg="gainsboro").grid(row=2, column=0, padx=10, pady=10)
-entry_total = tk.Entry(bottomleft_frame, width=20, font=("Tahoma", 10))
-entry_total.grid(row=2, column=1, padx=10, pady=10)
+tk.Label(bottomleft_frame, text="Total", font=("Tahoma", 14), bg="gainsboro").grid(row=2, column=0, padx=12, pady=12)
+entry_total = tk.Entry(bottomleft_frame, width=20, font=("Tahoma", 12))
+entry_total.grid(row=2, column=1, padx=12, pady=12)
 
 # bottommiddle_frame entries
-tk.Label(bottommiddle_frame, text="Mode of Payment", font=("Tahoma", 11), bg="gainsboro").grid(row=0, column=0, padx=10, pady=10)
-entry_modepayment = tk.Entry(bottommiddle_frame, width=20, font=("Tahoma", 10))
-entry_modepayment.grid(row=0, column=1, padx=10, pady=10)
+tk.Label(bottommiddle_frame, text="Mode of Payment", font=("Tahoma", 14), bg="gainsboro").grid(row=0, column=0, padx=12, pady=12)
+entry_modepayment = tk.Entry(bottommiddle_frame, width=20, font=("Tahoma", 12))
+entry_modepayment.grid(row=0, column=1, padx=12, pady=12)
 
-tk.Label(bottommiddle_frame, text="Cost", font=("Tahoma", 11), bg="gainsboro").grid(row=1, column=0, padx=10, pady=10)
-entry_cost = tk.Entry(bottommiddle_frame, width=20, font=("Tahoma", 10))
-entry_cost.grid(row=1, column=1, padx=10, pady=10)
+tk.Label(bottommiddle_frame, text="Cost", font=("Tahoma", 14), bg="gainsboro").grid(row=1, column=0, padx=12, pady=12)
+entry_cost = tk.Entry(bottommiddle_frame, width=20, font=("Tahoma", 12))
+entry_cost.grid(row=1, column=1, padx=12, pady=12)
 
-tk.Label(bottommiddle_frame, text="Change", font=("Tahoma", 11), bg="gainsboro").grid(row=2, column=0, padx=10, pady=10)
-entry_change = tk.Entry(bottommiddle_frame, width=20, font=("Tahoma", 10))
-entry_change.grid(row=2, column=1, padx=10, pady=10)
+tk.Label(bottommiddle_frame, text="Change", font=("Tahoma", 14), bg="gainsboro").grid(row=2, column=0, padx=12, pady=12)
+entry_change = tk.Entry(bottommiddle_frame, width=20, font=("Tahoma", 12))
+entry_change.grid(row=2, column=1, padx=12, pady=12)
 
 # bottomright_frame entries
 pay_btn = tk.Button(bottomright_frame, text="Pay", font=("Tahoma", 16), width=16, height=3)
