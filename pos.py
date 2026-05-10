@@ -10,26 +10,30 @@ root.resizable(False, False)
 BG_COLOR = "slategray1"
 
 PRODUCTS_IMAGES = [
-    'hyein.jpg',
-    'hyein.jpg',
-    'hyein.jpg',
-    'hyein.jpg',
-    'hyein.jpg',
-    'hyein.jpg',
-    'hyein.jpg',
-    'hyein.jpg',
-    'hyein.jpg',
-    'hyein.jpg',
-    'hyein.jpg',
-    'hyein.jpg',
-    'hyein.jpg',
-    'hyein.jpg',
-    'hyein.jpg',
-    'hyein.jpg',
-    'hyein.jpg',
-    'hyein.jpg',
-    'hyein.jpg',
-    'hyein.jpg',
+    {"image": "Biscuits/oreo.jpeg", "price": 25.00},
+    {"image": "Biscuits/bingo.png", "price": 45.99},
+    {"image": "Condiments/soysauce.png", "price": 12.50},
+    {"image": "Condiments/vinegar.jpg", "price": 12.50},
+    {"image": "Condiments/oil.jpg", "price": 12.50},
+    {"image": "Dairy/creme.png", "price": 12.50},
+    {"image": "Dairy/eden.jpg", "price": 12.50},
+    {"image": "Dairy/nestle.jpeg", "price": 12.50},
+    {"image": "Energy drink/gatorade.jpeg", "price": 12.50},
+    {"image": "Energy drink/sting.jpg", "price": 12.50},
+    {"image": "Fruits - Vegetables/tomato.png", "price": 12.50},
+    {"image": "Fruits - Vegetables/melon.jpg", "price": 12.50},
+    {"image": "Fruits - Vegetables/cabbage.png", "price": 12.50},
+    {"image": "Juice/c2.bmp", "price": 12.50},
+    {"image": "Juice/delmonte.jpeg", "price": 12.50},
+    {"image": "Juice/zesto.bmp", "price": 12.50},
+    {"image": "Junk Foods/martys.jpg", "price": 12.50},
+    {"image": "Junk Foods/piattos.png", "price": 12.50},
+    {"image": "Softdrinks/cocacola.bmp", "price": 12.50},
+    {"image": "Softdrinks/sprite.bmp", "price": 12.50},
+
+
+
+    # ... add the rest of your 20 items here
 ]
 
 top_frame = tk.Frame(root, width=1350, height=550, bg=BG_COLOR)
@@ -137,18 +141,27 @@ products_frame.grid(row=0, column=2, padx=5, pady=5, sticky="nsew")
 
 products_frame_row = 0
 products_frame_col = 0
-for image in PRODUCTS_IMAGES:
-    # products image
-    product_image_1 = Image.open(image)
-    product_image_1 = product_image_1.resize((110, 110))
+for image in PRODUCTS_IMAGES:  # The variable name is 'image'
+    item_container = tk.Frame(products_frame, bg="white", borderwidth=1, relief="groove")
+    item_container.grid(row=products_frame_row, column=products_frame_col, padx=3.5 , pady=4)
+
+    # 1. Process image
+    product_image_1 = Image.open(image["image"])
+    product_image_1 = product_image_1.resize((100, 80))
     product_image_1_photo = ImageTk.PhotoImage(product_image_1)
 
-    product_image_1_label = tk.Label(products_frame, image=product_image_1_photo)
+    # 2. Use .pack() for both so they stack correctly
+    product_image_1_label = tk.Label(item_container, image=product_image_1_photo, bg="white")
     product_image_1_label.image = product_image_1_photo
-    product_image_1_label.grid(row=products_frame_row, column=products_frame_col)
+    product_image_1_label.pack(side="top", pady=1)  # Changed .grid to .pack
 
+    # 3. Use 'image' instead of 'item' here
+    price_text = f"₱{image['price']:.2f}"
+    price_label = tk.Label(item_container, text=price_text, font=("Tahoma", 9, "bold"), bg="white", fg="darkgreen")
+    price_label.pack(side="bottom", fill="x", pady=2)
+
+    # 4. Handle grid for the container
     products_frame_col += 1
-    
     if (products_frame_col == 5):
         products_frame_row += 1
         products_frame_col = 0
