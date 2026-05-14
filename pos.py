@@ -1,3 +1,4 @@
+import os
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
 from PIL import Image, ImageTk
@@ -39,6 +40,7 @@ PRODUCTS_IMAGES = [
 
 # Cart dictionary to track items and quantities
 cart = {}
+payment_done = False
 
 top_frame = tk.Frame(root, width=1350, height=550, bg=BG_COLOR)
 top_frame.grid(row=0, column=0)
@@ -76,6 +78,10 @@ def clear_cost():
 def save_receipt():
     """Generate and save receipt as a .txt file"""
     try:
+        if not payment_done:
+            messagebox.showwarning("Payment Required", "Please complete payment before saving the receipt.")
+            return
+        
         # Get all items from the tree
         items = tree.get_children()
         
@@ -90,17 +96,21 @@ def save_receipt():
         receipt += f"Date & Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
         receipt += "=" * 50 + "\n\n"
         
-        receipt += f"{'Item':<25} {'Qty':>8} {'Amount':>15}\n"
-        receipt += "-" * 50 + "\n"
+        name_width = 28
+        qty_width = 6
+        amount_width = 14
+        sep_line = f"+{'-' * (name_width + 2)}+{'-' * (qty_width + 2)}+{'-' * (amount_width + 2)}+\n"
+        receipt += sep_line
+        receipt += f"| {'Item':<{name_width}} | {'Qty':^{qty_width}} | {'Amount':^{amount_width}} |\n"
+        receipt += sep_line
         
-        for item in items:
-            values = tree.item(item)['values']
-            item_name = values[0]
-            quantity = values[1]
-            amount = values[2]
-            receipt += f"{item_name:<25} {quantity:>8} ₱{float(amount):>13.2f}\n"
+        for item_name, item_data in cart.items():
+            quantity = item_data['quantity']
+            amount_value = item_data['price'] * quantity
+            amount_str = f"₱{amount_value:.2f}"
+            receipt += f"| {item_name:<{name_width}} | {quantity:^{qty_width}} | {amount_str:>{amount_width}} |\n"
         
-        receipt += "-" * 50 + "\n"
+        receipt += sep_line
         receipt += f"\nSubtotal: ₱{entry_subtotal.get() if entry_subtotal.get() else '0.00'}\n"
         receipt += f"Tax:      ₱{entry_tax.get() if entry_tax.get() else '0.00'}\n"
         receipt += f"Total:    ₱{entry_total.get() if entry_total.get() else '0.00'}\n"
@@ -123,16 +133,59 @@ def save_receipt():
         )
         
         if file_path:
-            with open(file_path, 'w') as file:
-                file.write(receipt)
-            messagebox.showinfo("Success", f"Receipt saved successfully!\n{file_path}")
+            prefix = "\n\n" if os.path.exists(file_path) and os.path.getsize(file_path) > 0 else ""
+            with open(file_path, 'a', encoding='utf-8') as file:
+                file.write(prefix + receipt)
+            messagebox.showinfo("Success", f"Receipt appended successfully!\n{file_path}")
         
     except Exception as e:
         messagebox.showerror("Error", f"An error occurred while saving: {str(e)}")
     
 
+def process_payment():
+    """Validate payment before saving receipt."""
+    global payment_done
+    
+    if not cart:
+        messagebox.showwarning("No Items", "Please add items to the cart before payment.")
+        return
+    
+    if not entry_modepayment.get().strip():
+        messagebox.showwarning("Payment Required", "Please enter mode of payment before paying.")
+        return
+    
+    try:
+        total_value = float(entry_total.get()) if entry_total.get() else 0.0
+    except ValueError:
+        messagebox.showerror("Invalid Total", "Total is not a valid number. Please check the tax and cart values.")
+        return
+    
+    if total_value <= 0:
+        messagebox.showwarning("Invalid Total", "Total amount must be greater than zero.")
+        return
+    
+    try:
+        paid_value = float(entry_cost.get()) if entry_cost.get() else 0.0
+    except ValueError:
+        messagebox.showerror("Invalid Payment", "Cost must be a valid number entered using the keypad.")
+        return
+    
+    if paid_value < total_value:
+        messagebox.showwarning("Insufficient Payment", "Payment amount is less than the total. Please enter enough cash.")
+        return
+    
+    change_amount = paid_value - total_value
+    entry_change.delete(0, tk.END)
+    entry_change.insert(0, f"{change_amount:.2f}")
+    payment_done = True
+    messagebox.showinfo("Payment Processed", f"Payment accepted. Change: ₱{change_amount:.2f}")
+
+
 def add_to_cart(product_name, price):
     """Add item to cart or increase quantity if already exists"""
+    global payment_done
+    payment_done = False
+    
     if product_name in cart:
         cart[product_name]['quantity'] += 1
     else:
@@ -183,8 +236,9 @@ def update_totals():
 
 def reset_cart():
     """Clear the cart and reset all entries"""
-    global cart
+    global cart, payment_done
     cart = {}
+    payment_done = False
     update_tree_view()
     
     entry_subtotal.delete(0, tk.END)
@@ -196,6 +250,8 @@ def reset_cart():
 
 def remove_selected_item():
     """Remove selected item from tree"""
+    global payment_done
+    payment_done = False
     selected_item = tree.selection()
     if selected_item:
         # Get the item name from the tree
@@ -260,9 +316,9 @@ tree = ttk.Treeview(middle_frame, columns=columns, show="headings", height=16)
 tree.heading("Item", text="Item")
 tree.heading("Quantity", text="Quantity")
 tree.heading("Amount", text="Amount")
-tree.column("Item", width=180, anchor="w")
-tree.column("Quantity", width=60, anchor="center")
-tree.column("Amount", width=120, anchor="center")
+tree.column("Item", width=220, anchor="w")
+tree.column("Quantity", width=80, anchor="center")
+tree.column("Amount", width=100, anchor="center")
 
 scrollbar = ttk.Scrollbar(middle_frame, orient="vertical", command=tree.yview)
 tree.configure(yscrollcommand=scrollbar.set)
@@ -362,7 +418,7 @@ entry_change = tk.Entry(bottommiddle_frame, width=20, font=("Tahoma", 12))
 entry_change.grid(row=2, column=1, padx=12, pady=12)
 
 # bottomright_frame entries
-pay_btn = tk.Button(bottomright_frame, text="Pay", font=("Tahoma", 16), width=16, height=3)
+pay_btn = tk.Button(bottomright_frame, text="Pay", font=("Tahoma", 16), width=16, height=3, command=process_payment)
 reset_btn = tk.Button(bottomright_frame, text="Reset", font=("Tahoma", 16), width=16, height=3, command=reset_cart)
 save_btn = tk.Button(bottomright_frame, text="Save", font=("Tahoma", 16), width=16, height=3, command=save_receipt)
 removeitem_btn = tk.Button(bottomright_frame, text="Remove", font=("Tahoma", 16), width=16, height=3, command=remove_selected_item)
