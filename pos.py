@@ -31,8 +31,6 @@ PRODUCTS_IMAGES = [
     {"image": "Softdrinks/cocacola.bmp", "price": 12.50},
     {"image": "Softdrinks/sprite.bmp", "price": 12.50},
 
-
-
     # ... add the rest of your 20 items here
 ]
 
