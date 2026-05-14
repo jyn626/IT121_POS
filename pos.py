@@ -42,7 +42,7 @@ top_frame = tk.Frame(root, width=1350, height=550, bg=BG_COLOR)
 top_frame.grid(row=0, column=0)
   
 # number frame
-numbers_frame = ttk.Frame(top_frame, width=300, height=490, borderwidth=4, relief="ridge")
+numbers_frame = ttk.Frame(top_frame, width=300, height=490, style="Styled.TFrame")
 numbers_frame.grid(row=0, column=0, padx=5, pady=2, sticky="nsew")
 
   
@@ -271,12 +271,15 @@ style.theme_use('clam')
 style.configure('W.TButton', font=
                ('Tahoma', 18, 'normal'),
                 foreground='black',
+                background="white",
+                borderwidth=2,
+                relief="groove",
                 padding=((0, 40)))
 
 style.configure(
         "Styled.Treeview",
         font=("Tahoma", 12),
-        rowheight=25,
+        rowheight=30,
         background="white",
         fieldbackground="white",
         borderwidth=2
@@ -284,9 +287,8 @@ style.configure(
   
 style.configure(
     "Styled.TFrame",
-    background='white',
-    borderwidth=0
-    
+    background='whitesmoke',
+    borderwidth=0,
 )  
   
 # number buttons
@@ -325,12 +327,8 @@ for i in range(6):  # rows
 for j in range(3):  # columns
     numbers_frame.grid_columnconfigure(j, weight=1)
   
-# products frame
-products_frame = tk.Frame(top_frame, bg="gray")
-products_frame.grid(row=0, column=1, sticky="nsew")
-
 # middle_frame
-middle_frame = ttk.Frame(top_frame, width=390, height=490, style="Styled.TFrame")
+middle_frame = ttk.Frame(top_frame, width=380, height=490, style="Styled.TFrame")
 middle_frame.grid(row=0, column=1, sticky="nsew")
 
 # style.configure(".", font=('Helvetica', 8), foreground="white")
@@ -339,11 +337,11 @@ middle_frame.grid(row=0, column=1, sticky="nsew")
 
 # item list
 columns = ("Item", "Quantity", "Amount")
-tree = ttk.Treeview(middle_frame, columns=columns, show="headings", height=15, style='Styled.Treeview')
+tree = ttk.Treeview(middle_frame, columns=columns, show="headings", height=19, style='Styled.Treeview')
 tree.heading("Item", text="Item")
 tree.heading("Quantity", text="Quantity")
 tree.heading("Amount", text="Amount")
-tree.column("Item", width=180, anchor="w")
+tree.column("Item", width=170, anchor="w")  
 tree.column("Quantity", width=80, anchor="center")
 tree.column("Amount", width=100, anchor="center")
 
@@ -359,25 +357,24 @@ scrollbar.grid(row=0, column=1, sticky="ns", pady=(4, 0))
 
 # right frame
 
-products_frame = tk.Frame(top_frame, bg="gainsboro", width=575, height=490,
-                          borderwidth=4, relief="ridge")
-products_frame.grid(row=0, column=2, padx=5, pady=5, sticky="nsew")
+products_frame = ttk.Frame(top_frame, height=490, style="Styled.TFrame")
+products_frame.grid(row=0, column=2, padx=2, ipadx=5, pady=2, sticky="nsew")
 
 products_frame_row = 0
 products_frame_col = 0
 for image in PRODUCTS_IMAGES:  # The variable name is 'image'
-    item_container = tk.Frame(products_frame, bg="white", borderwidth=1, relief="groove")
-    item_container.grid(row=products_frame_row, column=products_frame_col, padx=3.5 , pady=4)
+    item_container = ttk.Frame(products_frame, width=200)
+    item_container.grid(row=products_frame_row, column=products_frame_col, padx=2 , pady=2)
 
     # 1. Process image
     product_image_1 = Image.open(image["image"])
-    product_image_1 = product_image_1.resize((100, 80))
+    product_image_1 = product_image_1.resize((123, 100))
     product_image_1_photo = ImageTk.PhotoImage(product_image_1)
 
     # 2. Use .pack() for both so they stack correctly
     product_image_1_label = tk.Label(item_container, image=product_image_1_photo, bg="white", cursor="hand2")
     product_image_1_label.image = product_image_1_photo
-    product_image_1_label.pack(side="top", pady=1)  # Changed .grid to .pack
+    product_image_1_label.pack(pady=1)  # Changed .grid to .pack
     
     # Bind click event to add item to cart
     product_image_1_label.bind("<Button-1>", lambda e, name=image["name"], price=image["price"]: add_to_cart(name, price))
@@ -385,7 +382,7 @@ for image in PRODUCTS_IMAGES:  # The variable name is 'image'
     # 3. Use 'image' instead of 'item' here
     price_text = f"₱{image['price']:.2f}"
     price_label = tk.Label(item_container, text=price_text, font=("Tahoma", 9, "bold"), bg="white", fg="darkgreen")
-    price_label.pack(side="bottom", fill="x", pady=2)
+    price_label.pack(fill="x", pady=1)
 
     # 4. Handle grid for the container
     products_frame_col += 1
@@ -398,7 +395,7 @@ for image in PRODUCTS_IMAGES:  # The variable name is 'image'
 top_frame.grid_propagate(False)
 numbers_frame.grid_propagate(False)
 middle_frame.grid_propagate(False)
-products_frame.grid_propagate(False)
+# products_frame.grid_propagate(False)
 
 # bottom frame
 bottom_frame = tk.Frame(root, width=1350, height=200, borderwidth=4, bg=BG_COLOR)
