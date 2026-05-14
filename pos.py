@@ -1,6 +1,8 @@
+import os
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, filedialog, messagebox
 from PIL import Image, ImageTk
+from datetime import datetime
 
 root = tk.Tk()
 
@@ -10,29 +12,33 @@ root.resizable(False, False)
 BG_COLOR = "slategray1"
 
 PRODUCTS_IMAGES = [
-    {"image": "Biscuits/oreo.jpeg", "price": 25.00},
-    {"image": "Biscuits/bingo.png", "price": 45.99},
-    {"image": "Condiments/soysauce.png", "price": 12.50},
-    {"image": "Condiments/vinegar.jpg", "price": 12.50},
-    {"image": "Condiments/oil.jpg", "price": 12.50},
-    {"image": "Dairy/creme.png", "price": 12.50},
-    {"image": "Dairy/eden.jpg", "price": 12.50},
-    {"image": "Dairy/nestle.jpeg", "price": 12.50},
-    {"image": "Energy drink/gatorade.jpeg", "price": 12.50},
-    {"image": "Energy drink/sting.jpg", "price": 12.50},
-    {"image": "Fruits - Vegetables/tomato.png", "price": 12.50},
-    {"image": "Fruits - Vegetables/melon.jpg", "price": 12.50},
-    {"image": "Fruits - Vegetables/cabbage.png", "price": 12.50},
-    {"image": "Juice/c2.bmp", "price": 12.50},
-    {"image": "Juice/delmonte.jpeg", "price": 12.50},
-    {"image": "Juice/zesto.bmp", "price": 12.50},
-    {"image": "Junk Foods/martys.jpg", "price": 12.50},
-    {"image": "Junk Foods/piattos.png", "price": 12.50},
-    {"image": "Softdrinks/cocacola.bmp", "price": 12.50},
-    {"image": "Softdrinks/sprite.bmp", "price": 12.50},
+    {"name": "Oreo", "image": "Biscuits/oreo.jpeg", "price": 25.00},
+    {"name": "Bingo", "image": "Biscuits/bingo.png", "price": 45.99},
+    {"name": "Soy Sauce", "image": "Condiments/soysauce.png", "price": 12.50},
+    {"name": "Vinegar", "image": "Condiments/vinegar.jpg", "price": 12.50},
+    {"name": "Oil", "image": "Condiments/oil.jpg", "price": 12.50},
+    {"name": "Creme", "image": "Dairy/creme.png", "price": 12.50},
+    {"name": "Eden", "image": "Dairy/eden.jpg", "price": 12.50},
+    {"name": "Nestle", "image": "Dairy/nestle.jpeg", "price": 12.50},
+    {"name": "Gatorade", "image": "Energy drink/gatorade.jpeg", "price": 12.50},
+    {"name": "Sting", "image": "Energy drink/sting.jpg", "price": 12.50},
+    {"name": "Tomato", "image": "Fruits - Vegetables/tomato.png", "price": 12.50},
+    {"name": "Melon", "image": "Fruits - Vegetables/melon.jpg", "price": 12.50},
+    {"name": "Cabbage", "image": "Fruits - Vegetables/cabbage.png", "price": 12.50},
+    {"name": "C2", "image": "Juice/c2.bmp", "price": 12.50},
+    {"name": "Del Monte", "image": "Juice/delmonte.jpeg", "price": 12.50},
+    {"name": "Zesto", "image": "Juice/zesto.bmp", "price": 12.50},
+    {"name": "Marty's", "image": "Junk Foods/martys.jpg", "price": 12.50},
+    {"name": "Piattos", "image": "Junk Foods/piattos.png", "price": 12.50},
+    {"name": "Coca Cola", "image": "Softdrinks/cocacola.bmp", "price": 12.50},
+    {"name": "Sprite", "image": "Softdrinks/sprite.bmp", "price": 12.50},
 
     # ... add the rest of your 20 items here
 ]
+
+# Cart dictionary to track items and quantities
+cart = {}
+payment_done = False
 
 top_frame = tk.Frame(root, width=1350, height=550, bg=BG_COLOR)
 top_frame.grid(row=0, column=0)
@@ -65,6 +71,197 @@ def clear_cost():
     entry_cost.config(state="normal")
     entry_cost.delete(0, tk.END)
     entry_cost.config(state="disabled")
+
+
+def save_receipt():
+    """Generate and save receipt as a .txt file"""
+    try:
+        if not payment_done:
+            messagebox.showwarning("Payment Required", "Please complete payment before saving the receipt.")
+            return
+        
+        # Get all items from the tree
+        items = tree.get_children()
+        
+        if not items:
+            messagebox.showwarning("No Items", "Please add items to the receipt before saving.")
+            return
+        
+        # Generate receipt content
+        receipt = "=" * 50 + "\n"
+        receipt += "RECEIPT\n"
+        receipt += "=" * 50 + "\n"
+        receipt += f"Date & Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
+        receipt += "=" * 50 + "\n\n"
+        
+        name_width = 28
+        qty_width = 6
+        amount_width = 14
+        sep_line = f"+{'-' * (name_width + 2)}+{'-' * (qty_width + 2)}+{'-' * (amount_width + 2)}+\n"
+        receipt += sep_line
+        receipt += f"| {'Item':<{name_width}} | {'Qty':^{qty_width}} | {'Amount':^{amount_width}} |\n"
+        receipt += sep_line
+        
+        for item_name, item_data in cart.items():
+            quantity = item_data['quantity']
+            amount_value = item_data['price'] * quantity
+            amount_str = f"₱{amount_value:.2f}"
+            receipt += f"| {item_name:<{name_width}} | {quantity:^{qty_width}} | {amount_str:>{amount_width}} |\n"
+        
+        receipt += sep_line
+        receipt += f"\nSubtotal: ₱{entry_subtotal.get() if entry_subtotal.get() else '0.00'}\n"
+        receipt += f"Tax:      ₱{entry_tax.get() if entry_tax.get() else '0.00'}\n"
+        receipt += f"Total:    ₱{entry_total.get() if entry_total.get() else '0.00'}\n"
+        
+        if entry_modepayment.get():
+            receipt += f"\nMode of Payment: {entry_modepayment.get()}\n"
+        
+        if entry_change.get():
+            receipt += f"Change: ₱{entry_change.get()}\n"
+        
+        receipt += "\n" + "=" * 50 + "\n"
+        receipt += "Thank you for your purchase!\n"
+        receipt += "=" * 50 + "\n"
+        
+        # Open file dialog to save
+        file_path = filedialog.asksaveasfilename(
+            defaultextension=".txt",
+            filetypes=[("Text files", "*.txt"), ("All files", "*.*")],
+            initialfile=f"Receipt_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+        )
+        
+        if file_path:
+            prefix = "\n\n" if os.path.exists(file_path) and os.path.getsize(file_path) > 0 else ""
+            with open(file_path, 'a', encoding='utf-8') as file:
+                file.write(prefix + receipt)
+            messagebox.showinfo("Success", f"Receipt appended successfully!\n{file_path}")
+        
+    except Exception as e:
+        messagebox.showerror("Error", f"An error occurred while saving: {str(e)}")
+    
+
+def process_payment():
+    """Validate payment before saving receipt."""
+    global payment_done
+    
+    if not cart:
+        messagebox.showwarning("No Items", "Please add items to the cart before payment.")
+        return
+    
+    if not entry_modepayment.get().strip():
+        messagebox.showwarning("Payment Required", "Please enter mode of payment before paying.")
+        return
+    
+    try:
+        total_value = float(entry_total.get()) if entry_total.get() else 0.0
+    except ValueError:
+        messagebox.showerror("Invalid Total", "Total is not a valid number. Please check the tax and cart values.")
+        return
+    
+    if total_value <= 0:
+        messagebox.showwarning("Invalid Total", "Total amount must be greater than zero.")
+        return
+    
+    try:
+        paid_value = float(entry_cost.get()) if entry_cost.get() else 0.0
+    except ValueError:
+        messagebox.showerror("Invalid Payment", "Cost must be a valid number entered using the keypad.")
+        return
+    
+    if paid_value < total_value:
+        messagebox.showwarning("Insufficient Payment", "Payment amount is less than the total. Please enter enough cash.")
+        return
+    
+    change_amount = paid_value - total_value
+    entry_change.delete(0, tk.END)
+    entry_change.insert(0, f"{change_amount:.2f}")
+    payment_done = True
+    messagebox.showinfo("Payment Processed", f"Payment accepted. Change: ₱{change_amount:.2f}")
+
+
+def add_to_cart(product_name, price):
+    """Add item to cart or increase quantity if already exists"""
+    global payment_done
+    payment_done = False
+    
+    if product_name in cart:
+        cart[product_name]['quantity'] += 1
+    else:
+        cart[product_name] = {'price': price, 'quantity': 1}
+    
+    update_tree_view()
+    update_totals()
+
+
+def update_tree_view():
+    """Update the tree view with current cart items"""
+    # Clear existing items
+    for item in tree.get_children():
+        tree.delete(item)
+    
+    # Add items from cart
+    for item_name, item_data in cart.items():
+        quantity = item_data['quantity']
+        price = item_data['price']
+        amount = quantity * price
+        tree.insert('', tk.END, values=(item_name, quantity, f"₱{amount:.2f}"))
+
+
+def update_totals():
+    """Calculate and update subtotal, tax, and total"""
+    subtotal = sum(item_data['price'] * item_data['quantity'] for item_data in cart.values())
+    
+    # Get tax if entered, otherwise assume 0
+    tax_rate = 0.0
+    try:
+        tax_value = float(entry_tax.get()) if entry_tax.get() else 0.0
+        if tax_value > 1:  # If value is greater than 1, assume it's a peso amount
+            tax = tax_value
+        else:  # Otherwise treat as percentage
+            tax = subtotal * tax_value
+    except:
+        tax = 0.0
+    
+    total = subtotal + tax
+    
+    # Update entry fields
+    entry_subtotal.delete(0, tk.END)
+    entry_subtotal.insert(0, f"{subtotal:.2f}")
+    
+    entry_total.delete(0, tk.END)
+    entry_total.insert(0, f"{total:.2f}")
+
+
+def reset_cart():
+    """Clear the cart and reset all entries"""
+    global cart, payment_done
+    cart = {}
+    payment_done = False
+    update_tree_view()
+    
+    entry_subtotal.delete(0, tk.END)
+    entry_tax.delete(0, tk.END)
+    entry_total.delete(0, tk.END)
+    entry_modepayment.delete(0, tk.END)
+    entry_change.delete(0, tk.END)
+
+
+def remove_selected_item():
+    """Remove selected item from tree"""
+    global payment_done
+    payment_done = False
+    selected_item = tree.selection()
+    if selected_item:
+        # Get the item name from the tree
+        item_values = tree.item(selected_item[0])['values']
+        item_name = item_values[0]
+        
+        # Remove from cart
+        if item_name in cart:
+            del cart[item_name]
+        
+        update_tree_view()
+        update_totals()
     
   
 # number buttons
@@ -117,9 +314,9 @@ tree = ttk.Treeview(middle_frame, columns=columns, show="headings", height=16)
 tree.heading("Item", text="Item")
 tree.heading("Quantity", text="Quantity")
 tree.heading("Amount", text="Amount")
-tree.column("Item", width=180, anchor="w")
-tree.column("Quantity", width=60, anchor="center")
-tree.column("Amount", width=120, anchor="center")
+tree.column("Item", width=220, anchor="w")
+tree.column("Quantity", width=80, anchor="center")
+tree.column("Amount", width=100, anchor="center")
 
 scrollbar = ttk.Scrollbar(middle_frame, orient="vertical", command=tree.yview)
 tree.configure(yscrollcommand=scrollbar.set)
@@ -149,9 +346,12 @@ for image in PRODUCTS_IMAGES:  # The variable name is 'image'
     product_image_1_photo = ImageTk.PhotoImage(product_image_1)
 
     # 2. Use .pack() for both so they stack correctly
-    product_image_1_label = tk.Label(item_container, image=product_image_1_photo, bg="white")
+    product_image_1_label = tk.Label(item_container, image=product_image_1_photo, bg="white", cursor="hand2")
     product_image_1_label.image = product_image_1_photo
     product_image_1_label.pack(side="top", pady=1)  # Changed .grid to .pack
+    
+    # Bind click event to add item to cart
+    product_image_1_label.bind("<Button-1>", lambda e, name=image["name"], price=image["price"]: add_to_cart(name, price))
 
     # 3. Use 'image' instead of 'item' here
     price_text = f"₱{image['price']:.2f}"
@@ -216,14 +416,14 @@ entry_change = tk.Entry(bottommiddle_frame, width=20, font=("Tahoma", 12))
 entry_change.grid(row=2, column=1, padx=12, pady=12)
 
 # bottomright_frame entries
-pay_btn = tk.Button(bottomright_frame, text="Pay", font=("Tahoma", 16), width=16, height=3)
-reset_btn = tk.Button(bottomright_frame, text="Reset", font=("Tahoma", 16), width=16, height=3)
-print_btn = tk.Button(bottomright_frame, text="Print", font=("Tahoma", 16), width=16, height=3)
-removeitem_btn = tk.Button(bottomright_frame, text="Remove", font=("Tahoma", 16), width=16, height=3)
+pay_btn = tk.Button(bottomright_frame, text="Pay", font=("Tahoma", 16), width=16, height=3, command=process_payment)
+reset_btn = tk.Button(bottomright_frame, text="Reset", font=("Tahoma", 16), width=16, height=3, command=reset_cart)
+save_btn = tk.Button(bottomright_frame, text="Save", font=("Tahoma", 16), width=16, height=3, command=save_receipt)
+removeitem_btn = tk.Button(bottomright_frame, text="Remove", font=("Tahoma", 16), width=16, height=3, command=remove_selected_item)
 
 pay_btn.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
 reset_btn.grid(row=0, column=1, padx=5, pady=5, sticky="nsew")
-print_btn.grid(row=1, column=0, padx=5, pady=5, sticky="nsew")
+save_btn.grid(row=1, column=0, padx=5, pady=5, sticky="nsew")
 removeitem_btn.grid(row=1, column=1, padx=5, pady=5, sticky="nsew")
 
 for i in range(2):
