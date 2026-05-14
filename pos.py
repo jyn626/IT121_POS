@@ -32,8 +32,6 @@ PRODUCTS_IMAGES = [
     {"name": "Piattos", "image": "Junk Foods/piattos.png", "price": 12.50},
     {"name": "Coca Cola", "image": "Softdrinks/cocacola.bmp", "price": 12.50},
     {"name": "Sprite", "image": "Softdrinks/sprite.bmp", "price": 12.50},
-
-    # ... add the rest of your 20 items here
 ]
 
 # Cart dictionary to track items and quantities
@@ -44,7 +42,7 @@ top_frame = tk.Frame(root, width=1350, height=550, bg=BG_COLOR)
 top_frame.grid(row=0, column=0)
   
 # number frame
-numbers_frame = tk.Frame(top_frame, bg="gainsboro", width=350, height=490, borderwidth=4, relief="ridge")
+numbers_frame = ttk.Frame(top_frame, width=300, height=490, borderwidth=4, relief="ridge")
 numbers_frame.grid(row=0, column=0, padx=5, pady=2, sticky="nsew")
 
   
@@ -264,19 +262,46 @@ def remove_selected_item():
         update_totals()
     
   
+style = ttk.Style(root)
+style.theme_use('clam')
+
+# This will be adding style, and 
+# naming that style variable as 
+# W.Tbutton (TButton is used for ttk.Button).
+style.configure('W.TButton', font=
+               ('Tahoma', 18, 'normal'),
+                foreground='black',
+                padding=((0, 40)))
+
+style.configure(
+        "Styled.Treeview",
+        font=("Tahoma", 12),
+        rowheight=25,
+        background="white",
+        fieldbackground="white",
+        borderwidth=2
+    )
+  
+style.configure(
+    "Styled.TFrame",
+    background='white',
+    borderwidth=0
+    
+)  
+  
 # number buttons
-btn1 = tk.Button(numbers_frame, text='1', bd=0, fg='black', font=("Tahoma", 16), bg='seashell3', command=lambda: press(1))
-btn2 = tk.Button(numbers_frame, text='2', bd=0, fg='black', font=("Tahoma", 16), bg='seashell3', command=lambda: press(2))
-btn3 = tk.Button(numbers_frame, text='3', bd=0, fg='black', font=("Tahoma", 16), bg='seashell3', command=lambda: press(3))
-btn4 = tk.Button(numbers_frame, text='4', bd=0, fg='black', font=("Tahoma", 16), bg='seashell3', command=lambda: press(4))
-btn5 = tk.Button(numbers_frame, text='5', bd=0, fg='black', font=("Tahoma", 16), bg='seashell3', command=lambda: press(5))
-btn6 = tk.Button(numbers_frame, text='6', bd=0, fg='black', font=("Tahoma", 16), bg='seashell3', command=lambda: press(6))
-btn7 = tk.Button(numbers_frame, text='7', bd=0, fg='black', font=("Tahoma", 16), bg='seashell3', command=lambda: press(7))
-btn8 = tk.Button(numbers_frame, text='8', bd=0, fg='black', font=("Tahoma", 16), bg='seashell3', command=lambda: press(8))
-btn9 = tk.Button(numbers_frame, text='9', bd=0, fg='black', font=("Tahoma", 16), bg='seashell3', command=lambda: press(9))
-btn0 = tk.Button(numbers_frame, text='0', bd=0, fg='black', font=("Tahoma", 16), bg='seashell3', command=lambda: press(0))
-btnperiod = tk.Button(numbers_frame, text='.', bd=0, fg='black', font=("Tahoma", 16), bg='seashell3', command=lambda: press('.'))
-btnclear = tk.Button(numbers_frame, text='C', bd=0, fg='black', font=("Tahoma", 16), bg='seashell3', command=lambda:clear_cost())
+btn1 = ttk.Button(numbers_frame, text='1', command=lambda: press(1), style="W.TButton")
+btn2 = ttk.Button(numbers_frame, text='2', command=lambda: press(2), style="W.TButton")
+btn3 = ttk.Button(numbers_frame, text='3', command=lambda: press(3), style="W.TButton")
+btn4 = ttk.Button(numbers_frame, text='4', command=lambda: press(4), style="W.TButton")
+btn5 = ttk.Button(numbers_frame, text='5', command=lambda: press(5), style="W.TButton")
+btn6 = ttk.Button(numbers_frame, text='6', command=lambda: press(6), style="W.TButton")
+btn7 = ttk.Button(numbers_frame, text='7', command=lambda: press(7), style="W.TButton")
+btn8 = ttk.Button(numbers_frame, text='8', command=lambda: press(8), style="W.TButton")
+btn9 = ttk.Button(numbers_frame, text='9', command=lambda: press(9), style="W.TButton")
+btn0 = ttk.Button(numbers_frame, text='0', command=lambda: press(0), style="W.TButton")
+btnperiod = ttk.Button(numbers_frame, text='.', command=lambda: press('.'), style="W.TButton")
+btnclear = ttk.Button(numbers_frame, text='C', command=lambda:clear_cost(), style="W.TButton")
 
 btn1.grid(row=0, column=0, sticky="nsew")
 btn2.grid(row=0, column=1, sticky="nsew")
@@ -288,8 +313,8 @@ btn7.grid(row=2, column=0, sticky="nsew")
 btn8.grid(row=2, column=1, sticky="nsew")
 btn9.grid(row=2, column=2, sticky="nsew")
 btn0.grid(row=3, column=0, sticky="nsew")
-btnperiod.grid(row=3, column=1, columnspan=2, sticky="nsew")
-btnclear.grid(row=4, column=0, columnspan=3, sticky="nsew")
+btnperiod.grid(row=3, column=1, sticky="nsew")
+btnclear.grid(row=3, column=2, sticky="nsew")
 
 # .grid_rowconfigure 
 # -- para mo expand ang mga buttons sa width saiyang parent
@@ -305,16 +330,20 @@ products_frame = tk.Frame(top_frame, bg="gray")
 products_frame.grid(row=0, column=1, sticky="nsew")
 
 # middle_frame
-middle_frame = tk.Frame(top_frame, width=390, height=490, borderwidth=4, bg="gainsboro", relief="ridge")
-middle_frame.grid(row=0, column=1, padx=5, pady=5, sticky="nsew")
+middle_frame = ttk.Frame(top_frame, width=390, height=490, style="Styled.TFrame")
+middle_frame.grid(row=0, column=1, sticky="nsew")
+
+# style.configure(".", font=('Helvetica', 8), foreground="white")
+# style.configure("Treeview", foreground='red')
+# style.configure("Treeview.Heading", foreground='green')  # <
 
 # item list
 columns = ("Item", "Quantity", "Amount")
-tree = ttk.Treeview(middle_frame, columns=columns, show="headings", height=16)
+tree = ttk.Treeview(middle_frame, columns=columns, show="headings", height=15, style='Styled.Treeview')
 tree.heading("Item", text="Item")
 tree.heading("Quantity", text="Quantity")
 tree.heading("Amount", text="Amount")
-tree.column("Item", width=220, anchor="w")
+tree.column("Item", width=180, anchor="w")
 tree.column("Quantity", width=80, anchor="center")
 tree.column("Amount", width=100, anchor="center")
 
@@ -325,8 +354,8 @@ tree.grid(row=0, column=0, sticky="nsew", padx=(4, 0), pady=(4, 0))
 scrollbar.grid(row=0, column=1, sticky="ns", pady=(4, 0))
 
 # barcode (not yet working)
-barcode = tk.Canvas(middle_frame, height=70, highlightthickness=0, bg="gainsboro")
-barcode.grid(row=3, columnspan=2, padx=5, pady=5, sticky="ew")
+# barcode = tk.Canvas(middle_frame, height=70, highlightthickness=0, bg="gainsboro")
+# barcode.grid(row=3, columnspan=2, padx=5, pady=5, sticky="ew")
 
 # right frame
 
