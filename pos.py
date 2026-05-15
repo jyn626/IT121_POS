@@ -94,7 +94,7 @@ def save_receipt():
         
         name_width = 28
         qty_width = 6
-        amount_width = 12
+        amount_width = 14
         sep_line = f"+{'-' * (name_width + 2)}+{'-' * (qty_width + 2)}+{'-' * (amount_width + 2)}+\n"
         receipt += sep_line
         receipt += f"| {'Item':<{name_width}} | {'Qty':^{qty_width}} | {'Amount':^{amount_width}} |\n"
@@ -212,24 +212,24 @@ def update_totals():
     subtotal = sum(item_data['price'] * item_data['quantity'] for item_data in cart.values())
     
     # Get tax if entered, otherwise assume 0
-    tax_rate = 0.0
-    # try:
-    #     tax_value = float(entry_tax.get()) if entry_tax.get() else 0.0
-    #     if tax_value > 1:  # If value is greater than 1, assume it's a peso amount
-    #         tax = tax_value
-    #     else:  # Otherwise treat as percentage
-    #         tax = subtotal * tax_value
-    # except:
-    #     tax = 0.0
+    tax_rate = 10.0
+    try:
+        tax_value = float(entry_tax.get()) if entry_tax.get() else 0.0
+        if tax_value > 1:  # If value is greater than 1, assume it's a peso amount
+            tax = tax_value
+        else:  # Otherwise treat as percentage
+            tax = subtotal * tax_value
+    except:
+        tax = 10.0
     
-    # total = subtotal + tax
+    total = subtotal + tax
     
     # Update entry fields
     entry_subtotal.delete(0, tk.END)
     entry_subtotal.insert(0, f"{subtotal:.2f}")
     
     entry_total.delete(0, tk.END)
-    # entry_total.insert(0, f"{total:.2f}")
+    entry_total.insert(0, f"{total:.2f}")
 
 
 def reset_cart():
@@ -270,14 +270,14 @@ style = ttk.Style(root)
 style.theme_use('clam')
 
 style.configure('W.TButton', font=
-               ('Tahoma', 12, 'normal'),
+               ('Tahoma', 14, 'normal'),
                 foreground='black',
                 background="whitesmoke",
                 borderwidth=0,
                 padding=((0, 50)))
 
 style.configure('Bottom.TButton', font=
-               ('Tahoma', 12, 'normal'),
+               ('Tahoma', 14, 'normal'),
                 foreground='black',
                 background="whitesmoke",
                 borderwidth=0,
@@ -302,7 +302,7 @@ style.configure(
     font=("Tahoma", 12),
 )
 
-root.option_add('*TCombobox*Listbox.font', ('Tahoma', 12))
+root.option_add('*TCombobox*Listbox.font', ('Tahoma', 14))
   
 style.configure(
     "Styled.TFrame",
@@ -435,29 +435,29 @@ bottommiddle_frame.grid_propagate(False)
 bottomright_frame.grid_propagate(False)
 
 # bottomleft_frame entries
-tk.Label(bottomleft_frame, text="Subtotal", font=("Tahoma", 12)).grid(row=0, column=0, padx=12, pady=12)
+tk.Label(bottomleft_frame, text="Subtotal", font=("Tahoma", 14)).grid(row=0, column=0, padx=12, pady=12)
 entry_subtotal = ttk.Entry(bottomleft_frame, width=20, font=("Tahoma", 12), style="Styled.TEntry")
 entry_subtotal.grid(row=0, column=1, padx=12, pady=12)
 
-# tk.Label(bottomleft_frame, text="Tax", font=("Tahoma", 12), bg="whitesmoke").grid(row=1, column=0, padx=12, pady=12)
-# entry_tax = ttk.Entry(bottomleft_frame, width=20, font=("Tahoma", 12), style="Styled.TEntry")
-# entry_tax.grid(row=1, column=1, padx=12, pady=12)
+tk.Label(bottomleft_frame, text="Tax", font=("Tahoma", 14), bg="whitesmoke").grid(row=1, column=0, padx=12, pady=12)
+entry_tax = ttk.Entry(bottomleft_frame, width=20, font=("Tahoma", 12), style="Styled.TEntry")
+entry_tax.grid(row=1, column=1, padx=12, pady=12)
 
-tk.Label(bottomleft_frame, text="Total", font=("Tahoma", 12), bg="whitesmoke").grid(row=2, column=0, padx=12, pady=12)
+tk.Label(bottomleft_frame, text="Total", font=("Tahoma", 14), bg="whitesmoke").grid(row=2, column=0, padx=12, pady=12)
 entry_total = ttk.Entry(bottomleft_frame, width=20, font=("Tahoma", 12), style="Styled.TEntry")
 entry_total.grid(row=2, column=1, padx=12, pady=12)
 
 # bottommiddle_frame entries
-tk.Label(bottommiddle_frame, text="Mode", font=("Tahoma", 12), bg="whitesmoke").grid(row=0, column=0, padx=12, pady=12)
-entry_modepayment = ttk.Combobox(bottommiddle_frame, values=["Gcash", "Cash"], width=18, font=("Tahoma", 12), style="W.TCombobox", state="readonly")
+tk.Label(bottommiddle_frame, text="Mode", font=("Tahoma", 14), bg="whitesmoke").grid(row=0, column=0, padx=12, pady=12)
+entry_modepayment = ttk.Combobox(bottommiddle_frame, values=["Gcash", "Cash"], width=18, font=("Tahoma", 14), style="W.TCombobox", state="readonly")
 entry_modepayment.grid(row=0, column=1, padx=12, pady=12)
 entry_modepayment.set("Select")
 
-tk.Label(bottommiddle_frame, text="Cost", font=("Tahoma", 12), bg="whitesmoke").grid(row=1, column=0, padx=12, pady=12)
+tk.Label(bottommiddle_frame, text="Cost", font=("Tahoma", 14), bg="whitesmoke").grid(row=1, column=0, padx=12, pady=12)
 entry_cost = ttk.Entry(bottommiddle_frame, width=20, font=("Tahoma", 12), style="Styled.TEntry")
 entry_cost.grid(row=1, column=1, padx=12, pady=12)
 
-tk.Label(bottommiddle_frame, text="Change", font=("Tahoma", 12), bg="whitesmoke").grid(row=2, column=0, padx=12, pady=12)
+tk.Label(bottommiddle_frame, text="Change", font=("Tahoma", 14), bg="whitesmoke").grid(row=2, column=0, padx=12, pady=12)
 entry_change = ttk.Entry(bottommiddle_frame, width=20, font=("Tahoma", 12), style="Styled.TEntry")
 entry_change.grid(row=2, column=1, padx=12, pady=12)
 
