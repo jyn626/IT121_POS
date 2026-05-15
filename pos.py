@@ -9,7 +9,7 @@ root = tk.Tk()
 root.geometry("1350x750")
 root.resizable(False, False)
 
-BG_COLOR = "slategray1"
+BG_COLOR = "#4e69a2"
 
 PRODUCTS_IMAGES = [
     {"name": "Oreo", "image": "Biscuits/oreo.jpeg", "price": 25.00},
@@ -94,7 +94,7 @@ def save_receipt():
         
         name_width = 28
         qty_width = 6
-        amount_width = 14
+        amount_width = 12
         sep_line = f"+{'-' * (name_width + 2)}+{'-' * (qty_width + 2)}+{'-' * (amount_width + 2)}+\n"
         receipt += sep_line
         receipt += f"| {'Item':<{name_width}} | {'Qty':^{qty_width}} | {'Amount':^{amount_width}} |\n"
@@ -111,8 +111,9 @@ def save_receipt():
         receipt += f"Tax:      ₱{entry_tax.get() if entry_tax.get() else '0.00'}\n"
         receipt += f"Total:    ₱{entry_total.get() if entry_total.get() else '0.00'}\n"
         
-        if entry_modepayment.get():
-            receipt += f"\nMode of Payment: {entry_modepayment.get()}\n"
+        selected_payment = entry_modepayment.get().strip()
+        if selected_payment and selected_payment != "Select":
+            receipt += f"\nMode of Payment: {selected_payment}\n"
         
         if entry_change.get():
             receipt += f"Change: ₱{entry_change.get()}\n"
@@ -146,8 +147,9 @@ def process_payment():
         messagebox.showwarning("No Items", "Please add items to the cart before payment.")
         return
     
-    if not entry_modepayment.get().strip():
-        messagebox.showwarning("Payment Required", "Please enter mode of payment before paying.")
+    selected_payment = entry_modepayment.get().strip()
+    if not selected_payment or selected_payment == "Select":
+        messagebox.showwarning("Payment Required", "Please select a mode of payment before paying.")
         return
     
     try:
@@ -211,23 +213,23 @@ def update_totals():
     
     # Get tax if entered, otherwise assume 0
     tax_rate = 0.0
-    try:
-        tax_value = float(entry_tax.get()) if entry_tax.get() else 0.0
-        if tax_value > 1:  # If value is greater than 1, assume it's a peso amount
-            tax = tax_value
-        else:  # Otherwise treat as percentage
-            tax = subtotal * tax_value
-    except:
-        tax = 0.0
+    # try:
+    #     tax_value = float(entry_tax.get()) if entry_tax.get() else 0.0
+    #     if tax_value > 1:  # If value is greater than 1, assume it's a peso amount
+    #         tax = tax_value
+    #     else:  # Otherwise treat as percentage
+    #         tax = subtotal * tax_value
+    # except:
+    #     tax = 0.0
     
-    total = subtotal + tax
+    # total = subtotal + tax
     
     # Update entry fields
     entry_subtotal.delete(0, tk.END)
     entry_subtotal.insert(0, f"{subtotal:.2f}")
     
     entry_total.delete(0, tk.END)
-    entry_total.insert(0, f"{total:.2f}")
+    # entry_total.insert(0, f"{total:.2f}")
 
 
 def reset_cart():
@@ -240,8 +242,10 @@ def reset_cart():
     entry_subtotal.delete(0, tk.END)
     entry_tax.delete(0, tk.END)
     entry_total.delete(0, tk.END)
-    entry_modepayment.delete(0, tk.END)
     entry_change.delete(0, tk.END)
+    entry_cost.delete(0, tk.END)
+    entry_modepayment.set('')
+    entry_modepayment.current(-1)
 
 
 def remove_selected_item():
@@ -265,25 +269,40 @@ def remove_selected_item():
 style = ttk.Style(root)
 style.theme_use('clam')
 
-# This will be adding style, and 
-# naming that style variable as 
-# W.Tbutton (TButton is used for ttk.Button).
 style.configure('W.TButton', font=
-               ('Tahoma', 18, 'normal'),
+               ('Tahoma', 12, 'normal'),
                 foreground='black',
-                background="white",
-                borderwidth=2,
-                relief="groove",
-                padding=((0, 40)))
+                background="whitesmoke",
+                borderwidth=0,
+                padding=((0, 50)))
+
+style.configure('Bottom.TButton', font=
+               ('Tahoma', 12, 'normal'),
+                foreground='black',
+                background="whitesmoke",
+                borderwidth=0,
+                )
 
 style.configure(
         "Styled.Treeview",
         font=("Tahoma", 12),
-        rowheight=30,
+        rowheight=26,
         background="white",
         fieldbackground="white",
         borderwidth=2
     )
+  
+style.configure(
+    "Styled.TEntry",
+    padding=(5, 5)
+)
+
+style.configure(
+    "W.TCombobox",
+    font=("Tahoma", 12),
+)
+
+root.option_add('*TCombobox*Listbox.font', ('Tahoma', 12))
   
 style.configure(
     "Styled.TFrame",
@@ -352,7 +371,7 @@ tree.grid(row=0, column=0, sticky="nsew", padx=(4, 0), pady=(4, 0))
 scrollbar.grid(row=0, column=1, sticky="ns", pady=(4, 0))
 
 # barcode (not yet working)
-# barcode = tk.Canvas(middle_frame, height=70, highlightthickness=0, bg="gainsboro")
+# barcode = tk.Canvas(middle_frame, height=70, highlightthickness=0, bg="whitesmoke")
 # barcode.grid(row=3, columnspan=2, padx=5, pady=5, sticky="ew")
 
 # right frame
@@ -398,54 +417,55 @@ middle_frame.grid_propagate(False)
 # products_frame.grid_propagate(False)
 
 # bottom frame
-bottom_frame = tk.Frame(root, width=1350, height=200, borderwidth=4, bg=BG_COLOR)
+bottom_frame = ttk.Frame(root, width=1350, height=200)
 bottom_frame.grid(row=1 , column=0, sticky="nsew")
 
 # 3 bottom sections
-bottomleft_frame = tk.Frame(bottom_frame, bg="gainsboro", width=437, height=180, relief="ridge", bd=3)
-bottomleft_frame.grid(row=0 , column=0, padx=5, pady=5)
+bottomleft_frame = ttk.Frame(bottom_frame, width=437, height=180, style="Styled.TFrame")
+bottomleft_frame.grid(row=0 , column=0, padx=5)
 
-bottommiddle_frame = tk.Frame(bottom_frame, bg="gainsboro", width=437, height=180, relief="ridge", bd=3)
-bottommiddle_frame.grid(row=0 , column=1, padx=5, pady=5)
+bottommiddle_frame = ttk.Frame(bottom_frame, width=437, height=180, style="Styled.TFrame")
+bottommiddle_frame.grid(row=0 , column=1, padx=5)
 
-bottomright_frame = tk.Frame(bottom_frame, bg="gainsboro", width=437, height=180, relief="ridge", bd=3)
-bottomright_frame.grid(row=0 , column=2, padx=5, pady=5)
+bottomright_frame = ttk.Frame(bottom_frame, width=437, height=180, style="Styled.TFrame")
+bottomright_frame.grid(row=0 , column=2, padx=5)
 
 bottomleft_frame.grid_propagate(False)
 bottommiddle_frame.grid_propagate(False)
 bottomright_frame.grid_propagate(False)
 
 # bottomleft_frame entries
-tk.Label(bottomleft_frame, text="Subtotal", font=("Tahoma", 14), bg="gainsboro").grid(row=0, column=0, padx=12, pady=12)
-entry_subtotal = tk.Entry(bottomleft_frame, width=20, font=("Tahoma", 12))
+tk.Label(bottomleft_frame, text="Subtotal", font=("Tahoma", 12)).grid(row=0, column=0, padx=12, pady=12)
+entry_subtotal = ttk.Entry(bottomleft_frame, width=20, font=("Tahoma", 12), style="Styled.TEntry")
 entry_subtotal.grid(row=0, column=1, padx=12, pady=12)
 
-tk.Label(bottomleft_frame, text="Tax", font=("Tahoma", 14), bg="gainsboro").grid(row=1, column=0, padx=12, pady=12)
-entry_tax = tk.Entry(bottomleft_frame, width=20, font=("Tahoma", 12))
-entry_tax.grid(row=1, column=1, padx=12, pady=12)
+# tk.Label(bottomleft_frame, text="Tax", font=("Tahoma", 12), bg="whitesmoke").grid(row=1, column=0, padx=12, pady=12)
+# entry_tax = ttk.Entry(bottomleft_frame, width=20, font=("Tahoma", 12), style="Styled.TEntry")
+# entry_tax.grid(row=1, column=1, padx=12, pady=12)
 
-tk.Label(bottomleft_frame, text="Total", font=("Tahoma", 14), bg="gainsboro").grid(row=2, column=0, padx=12, pady=12)
-entry_total = tk.Entry(bottomleft_frame, width=20, font=("Tahoma", 12))
+tk.Label(bottomleft_frame, text="Total", font=("Tahoma", 12), bg="whitesmoke").grid(row=2, column=0, padx=12, pady=12)
+entry_total = ttk.Entry(bottomleft_frame, width=20, font=("Tahoma", 12), style="Styled.TEntry")
 entry_total.grid(row=2, column=1, padx=12, pady=12)
 
 # bottommiddle_frame entries
-tk.Label(bottommiddle_frame, text="Mode of Payment", font=("Tahoma", 14), bg="gainsboro").grid(row=0, column=0, padx=12, pady=12)
-entry_modepayment = tk.Entry(bottommiddle_frame, width=20, font=("Tahoma", 12))
+tk.Label(bottommiddle_frame, text="Mode", font=("Tahoma", 12), bg="whitesmoke").grid(row=0, column=0, padx=12, pady=12)
+entry_modepayment = ttk.Combobox(bottommiddle_frame, values=["Gcash", "Cash"], width=18, font=("Tahoma", 12), style="W.TCombobox", state="readonly")
 entry_modepayment.grid(row=0, column=1, padx=12, pady=12)
+entry_modepayment.set("Select")
 
-tk.Label(bottommiddle_frame, text="Cost", font=("Tahoma", 14), bg="gainsboro").grid(row=1, column=0, padx=12, pady=12)
-entry_cost = tk.Entry(bottommiddle_frame, width=20, font=("Tahoma", 12), state="disabled")
+tk.Label(bottommiddle_frame, text="Cost", font=("Tahoma", 12), bg="whitesmoke").grid(row=1, column=0, padx=12, pady=12)
+entry_cost = ttk.Entry(bottommiddle_frame, width=20, font=("Tahoma", 12), style="Styled.TEntry")
 entry_cost.grid(row=1, column=1, padx=12, pady=12)
 
-tk.Label(bottommiddle_frame, text="Change", font=("Tahoma", 14), bg="gainsboro").grid(row=2, column=0, padx=12, pady=12)
-entry_change = tk.Entry(bottommiddle_frame, width=20, font=("Tahoma", 12))
+tk.Label(bottommiddle_frame, text="Change", font=("Tahoma", 12), bg="whitesmoke").grid(row=2, column=0, padx=12, pady=12)
+entry_change = ttk.Entry(bottommiddle_frame, width=20, font=("Tahoma", 12), style="Styled.TEntry")
 entry_change.grid(row=2, column=1, padx=12, pady=12)
 
 # bottomright_frame entries
-pay_btn = tk.Button(bottomright_frame, text="Pay", font=("Tahoma", 16), width=16, height=3, command=process_payment)
-reset_btn = tk.Button(bottomright_frame, text="Reset", font=("Tahoma", 16), width=16, height=3, command=reset_cart)
-save_btn = tk.Button(bottomright_frame, text="Save", font=("Tahoma", 16), width=16, height=3, command=save_receipt)
-removeitem_btn = tk.Button(bottomright_frame, text="Remove", font=("Tahoma", 16), width=16, height=3, command=remove_selected_item)
+pay_btn = ttk.Button(bottomright_frame, text="Pay", width=20, command=process_payment, style="Bottom.TButton")
+reset_btn = ttk.Button(bottomright_frame, text="Reset", width=20, command=reset_cart, style="Bottom.TButton")
+save_btn = ttk.Button(bottomright_frame, text="Save", width=20, command=save_receipt, style="Bottom.TButton")
+removeitem_btn = ttk.Button(bottomright_frame, text="Remove", width=20, command=remove_selected_item, style="Bottom.TButton")
 
 pay_btn.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
 reset_btn.grid(row=0, column=1, padx=5, pady=5, sticky="nsew")
