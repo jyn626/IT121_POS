@@ -379,7 +379,19 @@ scrollbar.grid(row=0, column=1, sticky="ns", pady=(4, 0))
 products_frame = ttk.Frame(top_frame, height=490, style="Styled.TFrame")
 products_frame.grid(row=0, column=2, padx=2, ipadx=5, pady=2, sticky="nsew")
 
-products_frame_row = 0
+all_category_btn = tk.Button(products_frame, text='All', width=22)
+all_category_btn.grid(row=0, column=0)
+
+foods_category_btn = tk.Button(products_frame, text='Foods', width=22)
+foods_category_btn.grid(row=0, column=1)
+
+drinks_category_btn = tk.Button(products_frame, text='Drinks', width=22)
+drinks_category_btn.grid(row=0, column=2)
+
+condiments_category_btn = tk.Button(products_frame, text='Condiments', width=22)
+condiments_category_btn.grid(row=0, column=3)
+
+products_frame_row = 1
 products_frame_col = 0
 for image in PRODUCTS_IMAGES:  # The variable name is 'image'
     item_container = ttk.Frame(products_frame, width=200)
@@ -387,7 +399,7 @@ for image in PRODUCTS_IMAGES:  # The variable name is 'image'
 
     # 1. Process image
     product_image_1 = Image.open(image["image"])
-    product_image_1 = product_image_1.resize((123, 100))
+    product_image_1 = product_image_1.resize((112, 95))
     product_image_1_photo = ImageTk.PhotoImage(product_image_1)
 
     # 2. Use .pack() for both so they stack correctly
