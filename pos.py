@@ -250,9 +250,11 @@ def reset_cart():
     entry_tax.delete(0, tk.END)
     entry_total.delete(0, tk.END)
     entry_change.delete(0, tk.END)
+    entry_cost.config(state="normal")
     entry_cost.delete(0, tk.END)
     entry_modepayment.set('')
     entry_modepayment.current(-1)
+    entry_cost.config(state="disabled")
 
 
 def remove_selected_item():
