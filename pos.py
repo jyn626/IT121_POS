@@ -12,26 +12,33 @@ root.resizable(False, False)
 BG_COLOR = "#4e69a2"
 
 PRODUCTS_IMAGES = [
-    {"name": "Oreo", "image": "Biscuits/oreo.jpeg", "price": 25.00},
-    {"name": "Bingo", "image": "Biscuits/bingo.png", "price": 45.99},
-    {"name": "Soy Sauce", "image": "Condiments/soysauce.png", "price": 12.50},
-    {"name": "Vinegar", "image": "Condiments/vinegar.jpg", "price": 12.50},
-    {"name": "Oil", "image": "Condiments/oil.jpg", "price": 12.50},
-    {"name": "Creme", "image": "Dairy/creme.png", "price": 12.50},
-    {"name": "Eden", "image": "Dairy/eden.jpg", "price": 12.50},
-    {"name": "Nestle", "image": "Dairy/nestle.jpeg", "price": 12.50},
-    {"name": "Gatorade", "image": "Energy drink/gatorade.jpeg", "price": 12.50},
-    {"name": "Sting", "image": "Energy drink/sting.jpg", "price": 12.50},
-    {"name": "Tomato", "image": "Fruits - Vegetables/tomato.png", "price": 12.50},
-    {"name": "Melon", "image": "Fruits - Vegetables/melon.jpg", "price": 12.50},
-    {"name": "Cabbage", "image": "Fruits - Vegetables/cabbage.png", "price": 12.50},
-    {"name": "C2", "image": "Juice/c2.bmp", "price": 12.50},
-    {"name": "Del Monte", "image": "Juice/delmonte.jpeg", "price": 12.50},
-    {"name": "Zesto", "image": "Juice/zesto.bmp", "price": 12.50},
-    {"name": "Marty's", "image": "Junk Foods/martys.jpg", "price": 12.50},
-    {"name": "Piattos", "image": "Junk Foods/piattos.png", "price": 12.50},
-    {"name": "Coca Cola", "image": "Softdrinks/cocacola.bmp", "price": 12.50},
-    {"name": "Sprite", "image": "Softdrinks/sprite.bmp", "price": 12.50},
+    {"name": "Oreo", "image": "Biscuits/oreo.jpeg", "price": 25.00, "category": "foods"},
+    {"name": "Bingo", "image": "Biscuits/bingo.png", "price": 45.99, "category": "foods"},
+
+    {"name": "Soy Sauce", "image": "Condiments/soysauce.png", "price": 12.50, "category": "condiments"},
+    {"name": "Vinegar", "image": "Condiments/vinegar.jpg", "price": 12.50, "category": "condiments"},
+    {"name": "Oil", "image": "Condiments/oil.jpg", "price": 12.50, "category": "condiments"},
+
+    {"name": "Creme", "image": "Dairy/creme.png", "price": 12.50, "category": "foods"},
+    {"name": "Eden", "image": "Dairy/eden.jpg", "price": 12.50, "category": "foods"},
+    {"name": "Nestle", "image": "Dairy/nestle.jpeg", "price": 12.50, "category": "foods"},
+
+    {"name": "Gatorade", "image": "Energy drink/gatorade.jpeg", "price": 12.50, "category": "drinks"},
+    {"name": "Sting", "image": "Energy drink/sting.jpg", "price": 12.50, "category": "drinks"},
+
+    {"name": "Tomato", "image": "Fruits - Vegetables/tomato.png", "price": 12.50, "category": "foods"},
+    {"name": "Melon", "image": "Fruits - Vegetables/melon.jpg", "price": 12.50, "category": "foods"},
+    {"name": "Cabbage", "image": "Fruits - Vegetables/cabbage.png", "price": 12.50, "category": "foods"},
+
+    {"name": "C2", "image": "Juice/c2.bmp", "price": 12.50, "category": "drinks"},
+    {"name": "Del Monte", "image": "Juice/delmonte.jpeg", "price": 12.50, "category": "drinks"},
+    {"name": "Zesto", "image": "Juice/zesto.bmp", "price": 12.50, "category": "drinks"},
+
+    {"name": "Marty's", "image": "Junk Foods/martys.jpg", "price": 12.50, "category": "foods"},
+    {"name": "Piattos", "image": "Junk Foods/piattos.png", "price": 12.50, "category": "foods"},
+
+    {"name": "Coca Cola", "image": "Softdrinks/cocacola.bmp", "price": 12.50, "category": "drinks"},
+    {"name": "Sprite", "image": "Softdrinks/sprite.bmp", "price": 12.50, "category": "drinks"},
 ]
 
 # Cart dictionary to track items and quantities
@@ -391,35 +398,59 @@ drinks_category_btn.grid(row=0, column=2)
 condiments_category_btn = tk.Button(products_frame, text='Condiments', width=22)
 condiments_category_btn.grid(row=0, column=3)
 
-products_frame_row = 1
-products_frame_col = 0
-for image in PRODUCTS_IMAGES:  # The variable name is 'image'
-    item_container = ttk.Frame(products_frame, width=200)
-    item_container.grid(row=products_frame_row, column=products_frame_col, padx=2 , pady=2)
 
-    # 1. Process image
-    product_image_1 = Image.open(image["image"])
-    product_image_1 = product_image_1.resize((112, 95))
-    product_image_1_photo = ImageTk.PhotoImage(product_image_1)
-
-    # 2. Use .pack() for both so they stack correctly
-    product_image_1_label = tk.Label(item_container, image=product_image_1_photo, bg="white", cursor="hand2")
-    product_image_1_label.image = product_image_1_photo
-    product_image_1_label.pack(pady=1)  # Changed .grid to .pack
+def show_products(category="all"):
+    """Display product items filtered by category."""
     
-    # Bind click event to add item to cart
-    product_image_1_label.bind("<Button-1>", lambda e, name=image["name"], price=image["price"]: add_to_cart(name, price))
+    """
+        first, e-remove nato ang existing products
+        para pag display nato sa new filtered products
+        walay ma duplicates. 
+        (but we need to keep the filtering button)
+        that's why we have or we check
+        if info and info.get('row', 0) > 0:
+    """
+    for child in products_frame.winfo_children():
+        info = child.grid_info()
+        if info and info.get('row', 0) > 0:
+            child.destroy()
 
-    # 3. Use 'image' instead of 'item' here
-    price_text = f"₱{image['price']:.2f}"
-    price_label = tk.Label(item_container, text=price_text, font=("Tahoma", 9, "bold"), bg="white", fg="darkgreen")
-    price_label.pack(fill="x", pady=1)
+    products_frame_row = 1
+    products_frame_col = 0
+    
+    # new array filtered products 
+    filtered_products = PRODUCTS_IMAGES if category == "all" else [item for item in PRODUCTS_IMAGES if item["category"] == category]
 
-    # 4. Handle grid for the container
-    products_frame_col += 1
-    if (products_frame_col == 5):
-        products_frame_row += 1
-        products_frame_col = 0
+    # display again
+    for image in filtered_products:
+        item_container = ttk.Frame(products_frame, width=200)
+        item_container.grid(row=products_frame_row, column=products_frame_col, padx=2, pady=2)
+
+        product_image_1 = Image.open(image["image"])
+        product_image_1 = product_image_1.resize((112, 95))
+        product_image_1_photo = ImageTk.PhotoImage(product_image_1)
+
+        product_image_1_label = tk.Label(item_container, image=product_image_1_photo, bg="white", cursor="hand2")
+        product_image_1_label.image = product_image_1_photo
+        product_image_1_label.pack(pady=1)
+        product_image_1_label.bind("<Button-1>", lambda e, name=image["name"], price=image["price"]: add_to_cart(name, price))
+
+        price_text = f"₱{image['price']:.2f}"
+        price_label = tk.Label(item_container, text=price_text, font=("Tahoma", 9, "bold"), bg="white", fg="darkgreen")
+        price_label.pack(fill="x", pady=1)
+
+        products_frame_col += 1
+        if products_frame_col == 5:
+            products_frame_row += 1
+            products_frame_col = 0
+
+
+all_category_btn.config(command=lambda: show_products("all"))
+foods_category_btn.config(command=lambda: show_products("foods"))
+drinks_category_btn.config(command=lambda: show_products("drinks"))
+condiments_category_btn.config(command=lambda: show_products("condiments"))
+
+show_products()
 
 # kani para sundon sa frame ang gihatag nato nga width and height nya,
 # kay by default automatic iyang width and height
