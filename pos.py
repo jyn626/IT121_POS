@@ -215,26 +215,26 @@ def update_tree_view():
 
 
 def update_totals():
-    """Calculate and update subtotal, tax, and total"""
-    subtotal = sum(item_data['price'] * item_data['quantity'] for item_data in cart.values())
+   
+    subtotal = sum(
+        item_data['price'] * item_data['quantity']
+        for item_data in cart.values()
+    )
     
-    # Get tax if entered, otherwise assume 0
-    tax_rate = 10.0
-    try:
-        tax_value = float(entry_tax.get()) if entry_tax.get() else 0.0
-        if tax_value > 1:  # If value is greater than 1, assume it's a peso amount
-            tax = tax_value
-        else:  # Otherwise treat as percentage
-            tax = subtotal * tax_value
-    except:
-        tax = 10.0
-    
+    TAX_RATE = 0.12
+    tax = subtotal * TAX_RATE
+  
     total = subtotal + tax
-    
-    # Update entry fields
+
+    entry_subtotal.config(state="normal")
     entry_subtotal.delete(0, tk.END)
     entry_subtotal.insert(0, f"{subtotal:.2f}")
-    
+
+    entry_tax.config(state="normal")
+    entry_tax.delete(0, tk.END)
+    entry_tax.insert(0, f"{tax:.2f}")
+
+    entry_total.config(state="normal")
     entry_total.delete(0, tk.END)
     entry_total.insert(0, f"{total:.2f}")
 
