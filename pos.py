@@ -4,6 +4,11 @@ from tkinter import ttk, filedialog, messagebox
 from PIL import Image, ImageTk
 from datetime import datetime
 
+# so dari guys after ninyo e add ninyong
+# code, i follow ni ninyo nga steps !! 
+
+# new cooodeee!!
+
 root = tk.Tk()
 
 root.geometry("1350x750")
